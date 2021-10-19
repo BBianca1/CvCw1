@@ -1,4 +1,4 @@
-# CvCw1
+# CvCw2
 
 Computer vision Coursework 2
 
