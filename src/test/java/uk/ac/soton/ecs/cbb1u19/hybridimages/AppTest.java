@@ -1,4 +1,4 @@
-package cbb1u19;
+package uk.ac.soton.ecs.cbb1u19.hybridimages;
 
 import static org.junit.Assert.*;
 
