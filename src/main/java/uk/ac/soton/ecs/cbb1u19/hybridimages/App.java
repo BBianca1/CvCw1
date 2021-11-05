@@ -1,31 +1,33 @@
 package uk.ac.soton.ecs.cbb1u19.hybridimages;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.openimaj.image.DisplayUtilities;
+import org.openimaj.image.FImage;
+import org.openimaj.image.ImageUtilities;
 import org.openimaj.image.MBFImage;
-import org.openimaj.image.colour.ColourSpace;
-import org.openimaj.image.colour.RGBColour;
-import org.openimaj.image.processing.convolution.FGaussianConvolve;
-import org.openimaj.image.typography.hershey.HersheyFont;
 
 /**
  * OpenIMAJ Hello world!
  *
  */
 public class App {
-    public static void main( String[] args ) {
-    	//Create an image
-        MBFImage image = new MBFImage(320,70, ColourSpace.RGB);
-
-        //Fill the image with white
-        image.fill(RGBColour.WHITE);
-        		        
-        //Render some test into the image
-        image.drawText("Hello World", 10, 60, HersheyFont.CURSIVE, 50, RGBColour.BLACK);
-
-        //Apply a Gaussian blur
-        image.processInplace(new FGaussianConvolve(2f));
-        
-        //Display the image
-        DisplayUtilities.display(image);
+//	static float[][] kernel = {{0, 0, 0, 0, 0},{0, -1, -2, -1, 0},{0, 0, 0, 0, 0},{0, 1, 2, 1, 0},{0, 0, 0, 0, 0}};
+//	static float[][] kernel = {{0, -1, -2, -1, 0},{0, 0, 0, 0, 0},{0, 1, 2, 1, 0}};
+	static float[][] kernel = {{-1, -2, -1},{0, 0, 0},{1, 2, 1}};
+    public static void main( String[] args ) throws IOException {
+    	
+    	
+    	MBFImage highImage = ImageUtilities.readMBF(new File("data/cat.bmp"));
+    	MBFImage lowImage = ImageUtilities.readMBF(new File("data/dog.bmp"));
+    	
+    	MyConvolution myConvo = new MyConvolution(kernel);
+    	
+    	DisplayUtilities.display(highImage);
+    	DisplayUtilities.display(lowImage);
+//    	myConvo.processImage(highImage);
+    	
+//    	DisplayUtilities.display(MyHybridImages.makeHybrid(lowImage));
     }
 }

@@ -18,6 +18,11 @@ public class MyHybridImages {
 	 * @return the computed hybrid image
 	 */
 	public static MBFImage makeHybrid(MBFImage lowImage, float lowSigma, MBFImage highImage, float highSigma) {
+		
+		
+//		MyConvolution myConvo = new MyConvolution(App.kernel);
+		return lowImage;
+		
 		//implement your hybrid images functionality here. 
 		//Your submitted code must contain this method, but you can add 
 		//additional static methods or implement the functionality through
