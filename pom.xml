@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>cbb1u19</groupId>
-  <artifactId>CvCw2</artifactId>
+  <groupId>uk.ac.soton.ecs.cbb1u19.hybridimages</groupId>
+  <artifactId>CompVisionCwk2</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>CvCw2</name>
+  <name>CompVisionCwk2</name>
   <url>http://www.openimaj.org</url>
   <properties>
     <openimaj.version>1.3.10</openimaj.version>
@@ -150,7 +150,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>cbb1u19.App</mainClass>
+              <mainClass>uk.ac.soton.ecs.cbb1u19.hybridimages.App</mainClass>
             </manifest>
           </archive>
         </configuration>
