@@ -1,6 +1,10 @@
 package uk.ac.soton.ecs.cbb1u19.hybridimages;
 
+import java.lang.reflect.Array;
+
+import org.openimaj.image.DisplayUtilities;
 import org.openimaj.image.MBFImage;
+import org.openimaj.image.processing.convolution.Gaussian2D;
 
 public class MyHybridImages {
 	/**
@@ -20,15 +24,27 @@ public class MyHybridImages {
 	public static MBFImage makeHybrid(MBFImage lowImage, float lowSigma, MBFImage highImage, float highSigma) {
 		
 		
-//		MyConvolution myConvo = new MyConvolution(App.kernel);
-		return lowImage;
+		int sizeL = (int) (8.0f * lowSigma + 1.0f); // (this implies the window is +/- 4 sigmas from the centre of the Gaussian)
+		if (sizeL % 2 == 0) sizeL++; // size must be odd
+		MyConvolution myConvoLow = new MyConvolution(Gaussian2D.createKernelImage(sizeL, lowSigma).pixels);
+		MBFImage lowConvoImage = lowImage.process(myConvoLow);
+		DisplayUtilities.displayName(lowConvoImage,"low convo img");
 		
-		//implement your hybrid images functionality here. 
-		//Your submitted code must contain this method, but you can add 
-		//additional static methods or implement the functionality through
-		//instance methods on the `MyHybridImages` class of which you can create 
-		//an instance of here if you so wish.
-		//Note that the input images are expected to have the same size, and the output
-		//image will also have the same height & width as the inputs.
+		int sizeH = (int) (8.0f * highSigma + 1.0f); // (this implies the window is +/- 4 sigmas from the centre of the Gaussian)
+		if (sizeH % 2 == 0) sizeH++; // size must be odd
+		MyConvolution myConvoHigh = new MyConvolution(Gaussian2D.createKernelImage(sizeH, highSigma).pixels);
+		MBFImage highConvoImage = highImage.clone().process(myConvoHigh);
+		DisplayUtilities.displayName(highConvoImage,"high convo img");
+		
+		
+		System.out.println(highImage.getHeight() + " " + highImage.getWidth());// + " " + highImage.getPixel(i, j) - highConvoImage.getPixel(i, j));
+		for(int i = 0; i < lowImage.getHeight(); i++) {
+			for(int j = 0; j < lowImage.getWidth(); j++) {
+				for(int k = 0; k < lowImage.numBands(); k++) {
+					lowConvoImage.getBand(k).pixels[i][j] += highImage.getBand(k).pixels[i][j] - highConvoImage.getBand(k).pixels[i][j];
+				}
+			}
+		}
+		return lowConvoImage;
 	}
 }

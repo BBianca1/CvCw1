@@ -1,11 +1,11 @@
 package uk.ac.soton.ecs.cbb1u19.hybridimages;
-import org.openimaj.image.DisplayUtilities;
 import org.openimaj.image.FImage;
 import org.openimaj.image.processor.SinglebandImageProcessor;
 
 public class MyConvolution implements SinglebandImageProcessor<Float, FImage> {
 	private float[][] kernel;
-
+	FImage convolved;
+	
 	public MyConvolution(float[][] kernel) {
 		//note that like the image pixel s kernel is indexed by [row][column]
 		this.kernel = kernel;
@@ -23,24 +23,35 @@ public class MyConvolution implements SinglebandImageProcessor<Float, FImage> {
 		double tr = Math.floor(trow/2); //half of template rows
 		double tc = Math.floor(tcol/2); //half of template cols
 		
-		FImage convolved = new FImage(imageWidth, imageHeight);
+		convolved = image.clone();
 		convolved.fill(0); // makes image black
-		System.out.println(tc);
-		System.out.println(tcol);
-		System.out.println(tr);
-		System.out.println(trow);
 		
-		System.out.println(imageHeight + " " + imageWidth );
-		
-		for(int j = (int) (tc + 1); j < imageWidth - tc; j++) 
-			for(int i = (int) (tr + 1); i < imageHeight - tr; i++) {
+		for(int j = 0; j<imageWidth; j++) {
+			for(int i = 0; i<imageHeight; i++) {
 				float sum = 0;
-				for(int n = 0; n < tcol; n++)
+				for(int n = 0; n < tcol; n++) {
 					for(int m = 0; m < trow; m++) {
-						sum = sum + image.pixels[(int) (i + m - tr)][(int) (j + n - tc)] * kernel[m][n];
+						int c = (int) (j+n-tc);
+						int r = (int) (i+m-tr);
+						if(c < 0) {
+							c = imageWidth + c;
+						}
+						else if(c >= imageWidth){
+							c = c - imageWidth;
+						}
+						if(r < 0) {
+							r = imageHeight + r;
+						}
+						else if(r >= imageHeight){
+							r = r - imageHeight;
+						}
+						sum = sum + image.getPixel(c, r)*kernel[trow-m-1][tcol-n-1];
 					}
-				convolved.pixels[i][j] = sum;
+					convolved.pixels[i][j]=sum;
+				}
 			}
-		DisplayUtilities.displayName(convolved, "Convolution");
+		}
+		
+		image.internalAssign(convolved);
 	}
 }
