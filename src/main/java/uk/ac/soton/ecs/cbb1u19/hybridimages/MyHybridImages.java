@@ -23,24 +23,23 @@ public class MyHybridImages {
 	 */
 	public static MBFImage makeHybrid(MBFImage lowImage, float lowSigma, MBFImage highImage, float highSigma) {
 		
-		
+		//making the low-pass filtered version of the first image
 		int sizeL = (int) (8.0f * lowSigma + 1.0f); // (this implies the window is +/- 4 sigmas from the centre of the Gaussian)
 		if (sizeL % 2 == 0) sizeL++; // size must be odd
 		MyConvolution myConvoLow = new MyConvolution(Gaussian2D.createKernelImage(sizeL, lowSigma).pixels);
 		MBFImage lowConvoImage = lowImage.process(myConvoLow);
-		DisplayUtilities.displayName(lowConvoImage,"low convo img");
 		
+		//making the low-pass filtered version of the secind image
 		int sizeH = (int) (8.0f * highSigma + 1.0f); // (this implies the window is +/- 4 sigmas from the centre of the Gaussian)
 		if (sizeH % 2 == 0) sizeH++; // size must be odd
 		MyConvolution myConvoHigh = new MyConvolution(Gaussian2D.createKernelImage(sizeH, highSigma).pixels);
 		MBFImage highConvoImage = highImage.clone().process(myConvoHigh);
-		DisplayUtilities.displayName(highConvoImage,"high convo img");
 		
-		
-		System.out.println(highImage.getHeight() + " " + highImage.getWidth());// + " " + highImage.getPixel(i, j) - highConvoImage.getPixel(i, j));
+		//create the hibrid picture
 		for(int i = 0; i < lowImage.getHeight(); i++) {
 			for(int j = 0; j < lowImage.getWidth(); j++) {
 				for(int k = 0; k < lowImage.numBands(); k++) {
+					//the second picture's low-pass version is subtracted from the original second picture to get the high-pass filtered version.
 					lowConvoImage.getBand(k).pixels[i][j] += highImage.getBand(k).pixels[i][j] - highConvoImage.getBand(k).pixels[i][j];
 				}
 			}

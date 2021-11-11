@@ -14,44 +14,52 @@ public class MyConvolution implements SinglebandImageProcessor<Float, FImage> {
 	@Override
 	public void processImage(FImage image) {
 		
-		int imageHeight = image.getHeight(); // no of cols
-		int imageWidth = image.getWidth(); // no of raws
+		int imageHeight = image.getHeight(); // no of columns in the image
+		int imageWidth = image.getWidth(); // no of rows in the image
 		
-		int trow = kernel.length;
-		int tcol = kernel[0].length;
+		int trow = kernel.length; // no of rows in the kernel 
+		int tcol = kernel[0].length; // no of columns in the kernel
 		
-		double tr = Math.floor(trow/2); //half of template rows
-		double tc = Math.floor(tcol/2); //half of template cols
+		int tr = trow/2; //half of the length of the kernel's rows
+		int tc = tcol/2; //half of the length of the kernel's columns
 		
 		convolved = image.clone();
 		convolved.fill(0); // makes image black
 		
-		for(int j = 0; j<imageWidth; j++) {
-			for(int i = 0; i<imageHeight; i++) {
+		//Template Convolution done assuming that the image replicates to infinity along both dimensions and
+		//calculate new values by cyclic shift from the far border
+		for(int j = 0; j<imageHeight; j++) {
+			for(int i = 0; i<imageWidth; i++) {
 				float sum = 0;
 				for(int n = 0; n < tcol; n++) {
 					for(int m = 0; m < trow; m++) {
-						int c = (int) (j+n-tc);
-						int r = (int) (i+m-tr);
-						if(c < 0) {
-							c = imageWidth + c;
-						}
-						else if(c >= imageWidth){
-							c = c - imageWidth;
-						}
-						if(r < 0) {
-							r = imageHeight + r;
-						}
-						else if(r >= imageHeight){
-							r = r - imageHeight;
-						}
-						sum = sum + image.getPixel(c, r)*kernel[trow-m-1][tcol-n-1];
+						
+						if (i + m - tr >= 0 && j + n - tc >= 0 && i + m - tr < imageWidth && j + n - tc < imageHeight) {
+                            sum += image.getPixel(i + m - tr, j + n - tc) * kernel[trow - m - 1][tcol - n - 1];
+                        }
+                        else sum += 0;							
+						
+						
+//						int c = (int) (j+n-tc);
+//						int r = (int) (i+m-tr);
+//						if(c < 0) {
+//							c = imageWidth + c;
+//						}
+//						else if(c >= imageWidth){
+//							c = c - imageWidth;
+//						}
+//						if(r < 0) {
+//							r = imageHeight + r;
+//						}
+//						else if(r >= imageHeight){
+//							r = r - imageHeight;
+//						}
+//						sum = sum + image.getPixel(c, r)*kernel[trow-m-1][tcol-n-1];
 					}
-					convolved.pixels[i][j]=sum;
+					convolved.setPixel(i, j, sum);
 				}
 			}
 		}
-		
 		image.internalAssign(convolved);
 	}
 }
